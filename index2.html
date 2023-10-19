@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+    @font-face {
+        font-family: 'SBAggroB';
+        font-weight: 200; font-style: normal; 
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'SBAggroB';
+        font-weight: 300; font-style: normal; 
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'SBAggroB';
+        font-weight: 500; font-style: normal; 
+       src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
+        font-display: swap;
+    }
+    * {
+        margin: 0; padding: 0;
+    }
+
+    /* mouse */
+    .mouse {
+        background: #222; color: #fff;
+        font-family: 'SBAggroB';
+        font-weight: 400;
+    }
+    .bg {
+        position: relative; height: 100vh;
+        background-image: url(room.jpg);
+        background-size: cover; background-position: center center;
+        background-repeat: no-repeat;
+    }
+    .bg::before {
+        content: "";
+        position: absolute; left: 0; top: 0;
+        width: 100%; height: 100vh;
+        background-color: rgba(2, 10, 20, 0.9);
+        z-index: -1;
+    }
+
+
+    /* info */
+    .info {
+        color: #fff;
+        font-family: 'SBAggroB';
+        padding: 20px; font-size: 12px;
+        position: absolute; left: 0; top: 0;
+    }
+    /*.info.right {
+        left: auto; right: 0px; top: 0px;*/
+    }
+    .info h1 {
+        font-weight: 300; font-size: 20px;
+        line-height: 1.6; border-bottom: 1px dashed #fff;
+        display: inline-block; margin-bottom: 10px;
+    }
+    .info h1 a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 400;
+    }
+    .info p {
+        font-weight: 300; font-size: 16px;
+    }
+    .info li {
+        list-style: none;
+        display: inline;
+    }
+    .info li a {
+        display: inline-block;
+        text-decoration: none;
+        color: #fff;
+        border: 1px dashed #fff;
+        border-radius: 50%;
+        width: 20px; height: 20px;
+        line-height: 21px; text-align: center;
+        font-size: 12px; margin-bottom: 5px;
+    }
+    .info li.active a {
+        background: #fff; color: #000;
+    }
+    /*.info.left {
+        top: auto; right: 0px;
+        bottom: 0px; width: 200px;*/
+    }
+    .info.left li {
+        display: block;
+        font-size: 14px;
+        line-height: 1.6; font-weight: 300;
+    }
+
+    /* mouseCont */
+    .mouseCont {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #fff;
+        width: 100%; height: 100vh;
+        overflow: hidden;
+        font-family: 'SBAggroB';
+        cursor: none;
+    }
+    .mouseCont p {
+        font-size: 2vw;
+        line-height: 2; font-weight: 300; color: yellow;
+    }
+    .mouseCont p:last-child {
+        font-size: 2.5vw;
+        font-weight: normal; font-weight: 300;
+    }
+    .mouseCont em {
+        font-style: normal;
+        border-bottom: 0.2vw dashed orange;
+        color: orange
+    }
+    .cursor {
+        position: absolute;
+        width: 160px; height: 160px;
+        border-radius: 50%;
+        background: url(rooma.jpg) center center;
+        background-attachment: fixed;
+        background-size: cover;
+        border: 3px solid #fff;
+        overflow: hidden;
+        z-index: -1;
+    }
+    .info.left li.active {
+        text-decoration: underline;
+        color: orange;
+    }
+
+     #game-container {
+            position: relative;
+        }
+
+        .hidden-object {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: #009688;
+            border-radius: 50%;
+            display: none;
+        }
+
+</style>
+
+
+</head>
+<body class="mouse bg">
+
+    <main>
+        <div class="cursor"></div>
+
+        <article class="mouseCont">
+            <p>정전이야!</p>
+            <p>12시 전에 무도회에 가야하는데.. 물건들을 찾아줄래?</p>
+        </article>
+    </main>
+    <!-- //main -->
+
+    <!-- info -->
+    <div class="info">
+        <h1><a href="JavaScript:window.location.reload()">다시 시작하기</a></h1>
+        <p>남은 물건 수: <span id="remaining-count">3</span></p>
+    </div>
+
+    <!-- <div class="info right">
+    </div> -->
+
+   <!--  <div class="info left">
+        <ul>
+            <li>pageX : <span class="pageX">0</span></li>
+            <li>pageY : <span class="pageY">0</span></li> -->
+        <!-- </ul> -->
+    <!-- </div> -->
+    <!-- //info -->
+    <!-- script -->
+
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js">
+    </script>
+    <script>
+        const cursor = document.querySelector(".cursor");
+        const circle = cursor.getBoundingClientRect();
+
+        
+        function follow(e){
+            gsap.to(cursor, {duration: 0.3, left: e.pageX - circle.width/2, 
+                top: e.pageY - circle.height/2});
+
+            //출력
+            // document.querySelector(".pageX"),innerText = e.pateX + "px";
+            // document.querySelector(".pageY"),innerText = e.pateY + "px";
+        }
+        window.addEventListener("mousemove", follow);
+    </script>
+
+
+    <div id="clickable-area" style="width: 500px; height: 500px; background-color: lightgray;">
+  <div class="object" style="width: 50px; height: 50px; position: x: 188, y: 724; top: 100px; left: 100px;"></div>
+  <div class="object" style="width: 50px; height: 50px; position: x: 966, y: 699; top: 200px; left: 200px;"></div>
+  <div class="object" style="width: 50px; height: 50px; position: x: 1142, y: 532; top: 300px; left: 300px;"></div>
+</div>
+
+
+    <script>
+let remainingObjects = 3;
+
+const clickableArea = document.getElementById('clickable-area');
+const objects = document.querySelectorAll('.object');
+const remainingCountElement = document.getElementById('remaining-count');
+
+// 클릭 이벤트 리스너 추가
+clickableArea.addEventListener('click', (event) => {
+  const clickedX = event.clientX - clickableArea.getBoundingClientRect().left;
+  const clickedY = event.clientY - clickableArea.getBoundingClientRect().top;
+
+  objects.forEach((object) => {
+    const objectRect = object.getBoundingClientRect();
+    if (
+      clickedX >= objectRect.left &&
+      clickedX <= objectRect.right &&
+      clickedY >= objectRect.top &&
+      clickedY <= objectRect.bottom
+    ) {
+      // 클릭된 오브젝트를 클릭한 경우
+      if (object.style.display !== 'none') {
+        object.style.display = 'none'; // 오브젝트 숨기기
+        remainingObjects--;
+
+        if (remainingObjects === 0) {
+          alert('다 찾았다, 무도회장으로 가야지!');
+        }
+        remainingCountElement.textContent = remainingObjects;
+      }
+    }
+  });
+});
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+</body>
+</html>
